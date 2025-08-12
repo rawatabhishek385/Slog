@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import logo from "../../assets/logo.png";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -39,7 +40,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="https://c.animaapp.com/me73par1e8O0p7/img/link---logo-fe0f67c07572fca0f665-png.png"
+              src={logo}
               alt="Slog Logo"
               width={150}
               height={57}
