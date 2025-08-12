@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import logo from "../../assets/logo.png";
 import { ContactForm } from '@/components/contact-form';
 
 const footerLinks = [
@@ -17,7 +18,7 @@ export default function Footer() {
                 <div className="max-w-4xl mx-auto">
                     <div className="mb-8">
                         <Image 
-                            src="https://c.animaapp.com/me73par1e8O0p7/img/logo-fe0f67c07572fca0f665-png-1.png" 
+                            src={logo} 
                             alt="Slog Logo" 
                             width={200} 
                             height={76} 

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Typewriter } from "react-simple-typewriter";
 
 import slide1 from "../../assets/slide1.jpg";
 import slide2 from "../../assets/slide2.jpg";
@@ -18,7 +21,6 @@ const heroSlides = [
     image: slide1,
     dataAiHint: "modern classroom technology",
     superTitle: "100+ Courses",
-    title: "Start Your Journey to Excellence",
     description:
       "SLOG provides the Best Summer Training / Internship in Dehradun, 100% Job Guaranteed Training Module, Project Based Training, and Placement Assistance.",
   },
@@ -57,15 +59,15 @@ export default function Hero() {
                 <div className="relative w-full h-screen">
                   <Image
                     src={slide.image}
-                    alt={slide.title}
+                    alt={slide.title || slide.superTitle}
                     fill
-                    className="object-cover"
+                    className="object-cover brightness-100 contrast-125 saturate-150"
                     priority={index === 0}
                   />
                 </div>
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/50 z-10" />
+                <div className="absolute inset-0 bg-black/40 z-10" />
 
                 {/* Slide Content */}
                 <div className="absolute inset-0 flex items-center justify-center z-20">
@@ -80,12 +82,38 @@ export default function Hero() {
                           index > 0 ? "text-right" : "text-left"
                         }`}
                       >
-                        <div className="[font-family:'Poiret_One',Helvetica] text-5xl leading-[72px] font-normal tracking-[0] bg-gradient-to-r from-blue-300 via-cyan-300 to-teal-500 bg-clip-text text-transparent">
+                        <div className="[font-family:'Poiret_One',Helvetica] text-6xl md:text-7xl leading-[80px] font-semibold tracking-wide bg-gradient-to-r from-blue-300 via-cyan-300 to-teal-500 bg-clip-text text-transparent mb-4">
                           {slide.superTitle}
                         </div>
-                        <p className="text-2xl mt-4 leading-10">
+
+                        {/* Title / Typewriter effect on first slide */}
+                        {index === 0 ? (
+                          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                            <Typewriter
+                              words={[
+                                "100+ Experienced Mentors",
+                                "Placement Support System",
+                                "Get 250+ Online/Offline Courses",
+                                "Industry Level Training Curriculum",
+                              ]}
+                              loop={0}
+                              cursor
+                              cursorStyle="|"
+                              typeSpeed={50}
+                              deleteSpeed={30}
+                              delaySpeed={1500}
+                            />
+                          </h2>
+                        ) : (
+                          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                            {slide.title}
+                          </h2>
+                        )}
+
+                        <p className="text-2xl mt-2 leading-10">
                           {slide.description}
                         </p>
+
                         <Button
                           size="lg"
                           className="mt-8 px-8 py-6 text-lg rounded-lg"
