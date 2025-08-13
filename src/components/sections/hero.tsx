@@ -7,6 +7,7 @@ import { Typewriter } from "react-simple-typewriter";
 import slide1 from "../../assets/slide1.jpg";
 import slide2 from "../../assets/slide2.jpg";
 import slide3 from "../../assets/slide3.jpg";
+import slide4 from "../../assets/slide4.jpg";
 
 import {
   Carousel,
@@ -39,6 +40,14 @@ const heroSlides = [
     title: "Study at Your Own Pace",
     description:
       "With our online platform, you can access course materials and learn from anywhere, at any time that fits your schedule.",
+  },
+  {
+    image: slide4,
+    dataAiHint: "",
+    superTitle: "",
+    title: "",
+    description:
+      "",
   },
 ];
 

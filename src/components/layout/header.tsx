@@ -36,9 +36,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-// Top navigation items
 const navItems = [
-  { href: "#home", label: "Home" },
+  { href: "/", label: "Home" },
   { href: "#services", label: "Services" },
   { href: "#resources", label: "Resources" },
   { href: "/mentors", label: "Mentors" },
@@ -46,7 +45,6 @@ const navItems = [
   { href: "#contact", label: "Contact" },
 ];
 
-// Services data
 const services = [
   {
     name: "Corporate & Government Training",
@@ -105,7 +103,6 @@ const services = [
   },
 ];
 
-// Resources dropdown items
 const resourcesItems = [
   { href: "#apply", label: "Apply" },
   { href: "#verify-certificates", label: "Verify Certificates" },
@@ -115,30 +112,30 @@ const resourcesItems = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState(
-    services[0].subOptions ? services[0].subOptions[0] : services[0]
-  );
+  const [selectedService, setSelectedService] = useState(services[0]);
   const [activeMain, setActiveMain] = useState(services[0].name);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isResourcesDropdownOpen, setIsResourcesDropdownOpen] = useState(false);
-  const [displayImages, setDisplayImages] = useState(
-    services[0].images || services[0].subOptions?.[0]?.images || []
-  );
+  const [displayImages, setDisplayImages] = useState(services[0].images || []);
 
   useEffect(() => {
-    setDisplayImages(selectedService.images || []);
+    const allImages = [];
+    if (selectedService.images) allImages.push(...selectedService.images);
+    if (selectedService.subOptions) {
+      selectedService.subOptions.forEach(option => {
+        if (option.images) allImages.push(...option.images);
+      });
+    }
+    setDisplayImages(allImages);
   }, [selectedService]);
 
   useEffect(() => {
-    if (!displayImages.length) return;
-    const interval = setInterval(() => {
-      setDisplayImages((prev) => {
-        if (prev.length <= 1) return prev;
-        const [first, ...rest] = prev;
-        return [...rest, first];
-      });
-    }, 4000);
-    return () => clearInterval(interval);
+    if (displayImages.length > 1) {
+      const interval = setInterval(() => {
+        setDisplayImages(prev => [...prev.slice(1), prev[0]]);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
   }, [displayImages]);
 
   useEffect(() => {
@@ -148,30 +145,23 @@ export default function Header() {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-white/80 backdrop-blur-sm shadow-md" : "bg-transparent"
-      )}
-    >
+    <header className={cn(
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+      isScrolled ? "bg-white/80 backdrop-blur-sm shadow-md" : "bg-transparent"
+    )}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <Image src={logo} alt="Slog Logo" width={150} height={57} priority />
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex md:items-center md:space-x-8">
             {navItems.map((item) =>
               item.label === "Services" ? (
-                <div
-                  className="relative"
-                  key={item.label}
+                <div className="relative group" key={item.label}
                   onMouseEnter={() => setIsDropdownOpen(true)}
-                  onMouseLeave={() => setIsDropdownOpen(false)}
-                >
-                  <button className="text-sm font-bold text-black hover:text-black flex items-center">
+                  onMouseLeave={() => setIsDropdownOpen(false)}>
+                  <button className="text-sm font-bold text-black hover:text-black flex items-center py-2">
                     {item.label}
                     <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                       viewBox="0 0 24 24" stroke="currentColor">
@@ -179,57 +169,47 @@ export default function Header() {
                         d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  {isDropdownOpen && (
-                    <div className="absolute left-0 mt-3 flex bg-gray-900 text-white rounded-xl shadow-lg border border-gray-800 overflow-hidden w-[850px] z-50">
-                      {/* Column 1 */}
+                  <div className={`absolute left-0 pt-2 w-[850px] transition-all duration-200 ${isDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+                    <div className="flex bg-gray-900 text-white rounded-xl shadow-lg border border-gray-800 overflow-hidden z-50"
+                      onMouseEnter={() => setIsDropdownOpen(true)}
+                      onMouseLeave={() => setIsDropdownOpen(false)}>
+                      
                       <div className="w-1/4 p-4 bg-gray-800 overflow-y-auto max-h-[400px]">
                         {services.map((service) => (
                           <div key={service.name}>
-                            <div
-                              className={`p-3 rounded-lg cursor-pointer font-semibold ${
-                                activeMain === service.name ? "bg-white text-black" : "hover:bg-gray-700"
-                              }`}
-                              onMouseEnter={() => {
-                                setActiveMain(service.name);
-                                const firstSub = service.subOptions ? service.subOptions[0] : service;
-                                setSelectedService(firstSub);
-                                setDisplayImages(firstSub.images || []);
-                              }}
-                            >
+                            <div className={`p-3 rounded-lg cursor-pointer font-semibold ${
+                              activeMain === service.name ? "bg-white text-black" : "hover:bg-gray-700"
+                            }`}
+                            onClick={() => {
+                              setActiveMain(service.name);
+                              setSelectedService(service);
+                            }}>
                               {service.name}
                             </div>
-                            {activeMain === service.name && service.subOptions && (
-                              <div className="ml-2 mt-2 space-y-2">
-                                {service.subOptions.map((sub) => (
-                                  <div
-                                    key={sub.name}
-                                    className={`text-sm p-2 rounded-lg cursor-pointer ${
-                                      selectedService.name === sub.name ? "bg-gray-600" : "hover:bg-gray-600"
-                                    }`}
-                                    onMouseEnter={() => {
-                                      setSelectedService(sub);
-                                      setDisplayImages(sub.images || []);
-                                    }}
-                                  >
-                                    {sub.name}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
                           </div>
                         ))}
                       </div>
-                      {/* Column 2 */}
+
                       <div className="w-1/4 p-6 flex flex-col text-left overflow-y-auto max-h-[400px]">
-                        <h3 className="text-2xl font-bold mb-4">{selectedService.name}</h3>
-                        {selectedService.description && (
-                          <p className="mb-4 text-gray-300">{selectedService.description}</p>
+                        <h3 className="text-2xl font-bold">{selectedService.name}</h3>
+                        <p className="mb-4 text-gray-300 text-sm">{selectedService.description}</p>
+                        
+                        {selectedService.subOptions && (
+                          <div className="space-y-3">
+                            {selectedService.subOptions.map((sub) => (
+                              <div key={sub.name}>
+                                <h4 className="text-lg font-semibold">{sub.name}</h4>
+                                <p className="text-gray-400 text-xs">{sub.description}</p>
+                              </div>
+                            ))}
+                          </div>
                         )}
-                        <Button className="mt-6 bg-gray-400 text-black hover:bg-gray-300 rounded-lg w-fit">
+                        
+                        <Button className="mt-1 bg-gray-400 text-black hover:bg-gray-300 rounded-lg w-fit text-sm py-2 px-4">
                           Enquire Now
                         </Button>
                       </div>
-                      {/* Column 3 */}
+
                       <div className="w-2/4 mt-6 max-h-[400px] mr-6">
                         {displayImages.length > 0 && (
                           <div className="grid grid-cols-1 gap-2 max-w-full">
@@ -249,16 +229,13 @@ export default function Header() {
                         )}
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               ) : item.label === "Resources" ? (
-                <div
-                  className="relative"
-                  key={item.label}
+                <div className="relative group" key={item.label}
                   onMouseEnter={() => setIsResourcesDropdownOpen(true)}
-                  onMouseLeave={() => setIsResourcesDropdownOpen(false)}
-                >
-                  <button className="text-sm font-bold text-black hover:text-black flex items-center">
+                  onMouseLeave={() => setIsResourcesDropdownOpen(false)}>
+                  <button className="text-sm font-bold text-black hover:text-black flex items-center py-2">
                     {item.label}
                     <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                       viewBox="0 0 24 24" stroke="currentColor">
@@ -266,33 +243,28 @@ export default function Header() {
                         d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  {isResourcesDropdownOpen && (
-                    <div className="absolute left-0 mt-3 bg-gray-900 text-white rounded-xl shadow-lg border border-gray-800 overflow-hidden  z-50 font-semibold">
+                  <div className={`absolute left-1/2 transform -translate-x-1/2 pt-3 transition-all duration-200 ${isResourcesDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+                    <div className="bg-gray-900 text-white rounded-xl shadow-lg border border-gray-800 overflow-hidden z-50"
+                      onMouseEnter={() => setIsResourcesDropdownOpen(true)}
+                      onMouseLeave={() => setIsResourcesDropdownOpen(false)}>
                       {resourcesItems.map((res) => (
-                        <Link
-                          key={res.label}
-                          href={res.href}
-                          className="block px-4 py-2 hover:bg-gray-100 text-sm hover:text-black"
-                        >
+                        <Link key={res.label} href={res.href}
+                          className="block px-4 py-2 hover:bg-gray-100 text-sm hover:text-black">
                           {res.label}
                         </Link>
                       ))}
                     </div>
-                  )}
+                  </div>
                 </div>
               ) : (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="text-sm font-bold text-black hover:text-black"
-                >
+                <Link key={item.label} href={item.href}
+                  className="text-sm font-bold text-black hover:text-black py-2">
                   {item.label}
                 </Link>
               )
             )}
           </nav>
 
-          {/* Desktop Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="outline" className="rounded-full">
               Login / Sign Up
@@ -300,7 +272,6 @@ export default function Header() {
             <Button className="rounded-full">Enquiry</Button>
           </div>
 
-          {/* Mobile Menu */}
           <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -319,12 +290,9 @@ export default function Header() {
                 </div>
                 <nav className="flex flex-col space-y-4">
                   {navItems.map((item) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
+                    <Link key={item.label} href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-lg font-bold hover:text-primary"
-                    >
+                      className="text-lg font-bold hover:text-primary">
                       {item.label}
                     </Link>
                   ))}
