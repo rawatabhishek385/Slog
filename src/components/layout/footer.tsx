@@ -4,10 +4,8 @@ import logo from "../../assets/logo.png";
 import { ContactForm } from '@/components/contact-form';
 
 const footerLinks = [
-    { href: "#about", label: "About Us" },
     { href: "#contact", label: "Contact Us" },
     { href: "#", label: "F&Qs" },
-    { href: "#", label: "Centers" },
     { href: "#", label: "Gallery" },
 ];
 

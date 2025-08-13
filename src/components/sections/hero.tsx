@@ -61,13 +61,13 @@ export default function Hero() {
                     src={slide.image}
                     alt={slide.title || slide.superTitle}
                     fill
-                    className="object-cover brightness-100 contrast-125 saturate-150"
+                    className="object-cover"
                     priority={index === 0}
                   />
                 </div>
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/40 z-10" />
+                <div className="absolute inset-0 z-10" />
 
                 {/* Slide Content */}
                 <div className="absolute inset-0 flex items-center justify-center z-20">
@@ -78,8 +78,8 @@ export default function Hero() {
                       } items-center justify-between gap-8`}
                     >
                       <div
-                        className={`max-w-3xl text-white ${
-                          index > 0 ? "text-right" : "text-left"
+                        className={`max-w-3xl text-black ${
+                          index > 0 ? "text-right text-white" : "text-left"
                         }`}
                       >
                         <div className="[font-family:'Poiret_One',Helvetica] text-6xl md:text-7xl leading-[80px] font-semibold tracking-wide bg-gradient-to-r from-blue-300 via-cyan-300 to-teal-500 bg-clip-text text-transparent mb-4">
